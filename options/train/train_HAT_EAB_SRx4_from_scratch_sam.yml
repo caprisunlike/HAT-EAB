@@ -1,0 +1,143 @@
+# general settings
+name: train_HAT_EAB_SRx4_from_scratch_sam
+model_type: HATEABModel
+scale: 4
+num_gpu: auto
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: AID_train
+    type: PairedImageDatasetEdge
+    dataroot_gt: D:/AID-dataset/train/HR
+    dataroot_lq: D:/AID-dataset/train/LR_x4
+    dataroot_edge_gt : D:/AID-dataset/train/edge_masks_npy_HR
+    dataroot_edge_lq : D:/AID-dataset/train/edge_masks_npy
+    meta_info_file: D:/AID-dataset/meta_info_AID_GT.txt
+    io_backend:
+      type: disk
+
+    gt_size: 256
+    use_hflip: true
+    use_rot: true
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 6
+    batch_size_per_gpu: 2
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  val_1:
+    name: AID_val
+    type: PairedImageDatasetEdge
+    dataroot_gt: D:/AID-dataset/val/HR
+    dataroot_lq: D:/AID-dataset/val/LR_x4
+    dataroot_edge_gt : D:/AID-dataset/val/edge_masks_npy_HR
+    io_backend:
+      type: disk
+
+  # val_2:
+  #   name: Set14
+  #   type: PairedImageDataset
+  #   dataroot_gt: ./datasets/Set14/GTmod3
+  #   dataroot_lq: ./datasets/Set14/LRbicx3
+  #   io_backend:
+  #     type: disk
+
+  # val_3:
+  #   name: Urban100
+  #   type: PairedImageDataset
+  #   dataroot_gt: ./datasets/urban100/GTmod3
+  #   dataroot_lq: ./datasets/urban100/LRbicx3
+  #   io_backend:
+  #     type: disk
+
+
+# network structures
+network_g:
+  type: HAT_EAB
+  upscale: 4
+  in_chans: 3
+  img_size: 64
+  window_size: 16
+  compress_ratio: 3
+  squeeze_factor: 30
+  conv_scale: 0.01
+  overlap_ratio: 0.5
+  img_range: 1.
+  depths: [6, 6, 6, 6, 6, 6]
+  embed_dim: 180
+  num_heads: [6, 6, 6, 6, 6, 6]
+  mlp_ratio: 2
+  upsampler: 'pixelshuffle'
+  resi_connection: '1conv'
+  edge_scale: 0.01
+
+# path
+path:
+  pretrain_network_g: ~ #C:/Users/user/HAT/experiments/pretrained_models/HAT_SRx4_ImageNet-pretrain.pth
+  #param_key_g: 'params_ema'
+  strict_load_g: false
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 2e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [300000, 500000, 650000, 700000, 750000]
+    gamma: 0.5
+
+  total_iter: 500000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+  use_edge_branch: true
+  use_edge_loss: true
+  ea_debug: true
+  alpha: 0.7
+  edge_band: 1
+
+# validation settings
+val:
+  val_freq: !!float 5e3
+  save_img: False
+  pbar: False
+
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 4
+      test_y_channel: true
+      better: higher  # the higher, the better. Default: higher
+    ssim:
+      type: calculate_ssim
+      crop_border: 4
+      test_y_channel: true
+      better: higher  # the higher, the better. Default: higher
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
