@@ -1,4 +1,6 @@
 # HAT-EAB
+## Updates
+- (To do) Code that uses the edge map at inference
 
 ## How To Test
 ```
