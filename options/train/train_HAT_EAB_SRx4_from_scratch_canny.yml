@@ -4,6 +4,7 @@ model_type: HATEABModel
 scale: 4
 num_gpu: auto
 manual_seed: 0
+use_edge_in_test: true
 
 # dataset and data loader settings
 datasets:

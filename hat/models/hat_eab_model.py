@@ -66,8 +66,10 @@ class HATEABModel(SRModel):
 
     def process(self):
         # EA 사용 여부 ------------------------------------------------------------------------------------------
-        use_branch = self.opt.get('is_train', False) and \
-                     self.opt.get('train', {}).get('use_edge_branch', True)
+        is_train = bool(self.opt.get('is_train', False))
+        use_branch_train = self.opt.get('train', {}).get('use_edge_branch', True)
+        use_branch_val = self.opt.get('use_edge_in_test', False)
+        use_branch = (use_branch_train if is_train else use_branch_val)
         edge_to_use = self.edge_img if (use_branch and getattr(self, 'edge_img', None) is not None) else None
         # ------------------------------------------------------------------------------------------------------
 
@@ -93,7 +95,12 @@ class HATEABModel(SRModel):
         output_width = width * self.scale
         output_shape = (batch, channel, output_height, output_width)
 
-        use_branch = self.opt.get('is_train', False) and self.opt.get('train', {}).get('use_edge_branch', True)   # !! add
+        # EA 사용 여부 ------------------------------------------------------------------------------------------
+        is_train = bool(self.opt.get('is_train', False))
+        use_branch_train = self.opt.get('train', {}).get('use_edge_branch', True)
+        use_branch_val = self.opt.get('use_edge_in_test', False)
+        use_branch = (use_branch_train if is_train else use_branch_val)
+        # ------------------------------------------------------------------------------------------------------
 
         # start with black image
         self.output = self.img.new_zeros(output_shape)

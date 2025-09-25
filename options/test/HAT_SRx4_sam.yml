@@ -3,13 +3,16 @@ model_type: HATModel
 scale: 4
 num_gpu: 1  # set num_gpu: 0 for cpu mode
 manual_seed: 0
+use_edge_in_test: true
 
 datasets:
   test_1:  # the 1st test dataset
-    name: Set5
-    type: PairedImageDataset
+    name: AID_test
+    type: PairedImageDatasetEdge
     dataroot_gt: D:/AID-dataset/test/HR
     dataroot_lq: D:/AID-dataset/test/LR_x4
+    dataroot_edge_gt : D:/AID-dataset/test/edge_masks_npy_HR
+    dataroot_edge_lq : D:/AID-dataset/test/edge_masks_npy
     io_backend:
       type: disk
 
