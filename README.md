@@ -7,10 +7,14 @@ This project is based on [HAT](https://arxiv.org/abs/2205.04437).
     <img src = "https://github.com/user-attachments/assets/af50fa47-9275-45bf-af31-31180fdaa9b1" width="70%">
     <img src = "https://github.com/user-attachments/assets/9d642292-aaa3-42e6-ac7a-71f8c09e09e2" width="25%">
   </p>
-  
 
 ## Updates
 - :white_check_mark: Code that uses the edge map at inference
+
+## Environment
+- python 3.11
+- pytorch 2.4.0
+- cuda 12.4.1
 
 ## Dataset
 - AID dataset
