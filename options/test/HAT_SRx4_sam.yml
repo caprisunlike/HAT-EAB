@@ -1,5 +1,5 @@
-name: HAT_SRx4
-model_type: HATModel
+name: HAT_EAB_SRx4_sam
+model_type: HATEABModel
 scale: 4
 num_gpu: 1  # set num_gpu: 0 for cpu mode
 manual_seed: 0
@@ -50,7 +50,7 @@ datasets:
 
 # network structures
 network_g:
-  type: HAT
+  type: HAT_EAB
   upscale: 4
   in_chans: 3
   img_size: 64
