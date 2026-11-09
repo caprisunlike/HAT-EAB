@@ -14,6 +14,8 @@ This project is based on [HAT](https://arxiv.org/abs/2205.04437).
 ## Dataset
 - AID dataset
   https://captain-whu.github.io/AID/
+- LoveDA
+  https://github.com/junjue-wang/loveda
 
 ## How To Test
 ```
